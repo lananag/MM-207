@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MM-207 Repository</title>
+  </head>
+  <body>
+    <header>
+      <h1>MM-207 Repository</h1>
+    </header>
+    <main>
+      <p id="text"></p>
+      <button id="english">English</button>
+      <button id="norwegian">Norwegian</button>
+      <button id="swedish">Swedish</button>
+    </main>
+    <script>
+      let text = document.getElementById("text");
+
+      let btnEnglish = document.getElementById("english");
+      let btnNorwegian = document.getElementById("norwegian");
+      let btnSwedish = document.getElementById("swedish");
+
+      btnEnglish.addEventListener("click", function() {
+        getJoke(this.id);
+      });
+
+      btnNorwegian.addEventListener("click", function() {
+        getJoke(this.id);
+      });
+
+      btnSwedish.addEventListener("click", function() {
+        getJoke(this.id);
+      });
+
+      async function getJoke(id) {
+        try {
+          let response = await fetch("/jokes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ language: id })
+          });
+          let answer = await response.json();
+
+          if (answer.error) {
+            text.innerHTML = answer.error;
+          } else {
+            text.innerHTML = answer.joke;
+          }
+        } catch (error) {
+          text.innerHTML = error;
+        }
+      }
+    </script>
+  </body>
+</html>
