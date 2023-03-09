@@ -23,37 +23,50 @@
       let btnSwedish = document.getElementById("swedish");
 
       btnEnglish.addEventListener("click", function() {
-        getJoke(this.id);
+        let id=this.id;
+        getJoke(id);
+        console.log(id)
       });
 
       btnNorwegian.addEventListener("click", function() {
-        getJoke(this.id);
+        let id=this.id;
+        getJoke(id);
+        console.log(id)
       });
 
       btnSwedish.addEventListener("click", function() {
-        getJoke(this.id);
+        let id=this.id;
+        getJoke(id);
+        console.log(id)
       });
 
       async function getJoke(id) {
         try {
-          let response = await fetch("/jokes", {
-            method: "POST",
+          let languageID= id;
+          console.log(languageID);
+          let cfg={
+            method:"POST",
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ language: id })
-          });
-          let answer = await response.json();
-
-          if (answer.error) {
-            text.innerHTML = answer.error;
-          } else {
-            text.innerHTML = answer.joke;
+            body: JSON.stringify({ID:languageID})
           }
-        } catch (error) {
+          console.log(cfg);
+          let url = "/jokes";
+          let response = await fetch(url,cfg);
+          let answer = await response.json();
+          console.log(answer);
+          if (response.status!=200){
+            text.innerHTML= answer.error;
+          }
+            text.innerHTML = answer.joke;
+        }
+          
+          catch (error) {
           text.innerHTML = error;
         }
       }
+    
     </script>
   </body>
 </html>

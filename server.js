@@ -1,27 +1,37 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8080;
-const fs = require("fs");
+const getJoke = require("./languageModule/dictionary.js")
 
 app.use(express.json());
 app.use(express.static("public"));
 
-app.post("/jokes", (req, res) => {
-  let language = req.body.language;
-
-  fs.readFile(`languageModule/languages/${language}.json`, (err, data) => {
-    if (err) {
-      res.status(500).json({ error: "Error reading file" });
-      return;
+app.post("/jokes", async function (req, res) {
+  let language = req.body.ID;
+  console.log(language);
+  try {
+    let answer = await getJoke(language);
+    console.log(answer);
+    //if (answer.ok){
+      res.status(200).json(answer);
+    /*}
+    else{
+      res.status(403).json({error:"Failed to retrieve joke"})*/
     }
 
-    let languageJokes = JSON.parse(data);
-    let joke = languageJokes[Math.floor(Math.random() * languageJokes.length)];
+    catch(err){
+      next(err)
+    }
+  
+});
 
-    res.json({ joke });
-  });
+app.use(function(err,res){
+  res.status(403).json({
+    error:"An error occured",
+    type:err
+  }).end();
 });
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
-});
+}); 
